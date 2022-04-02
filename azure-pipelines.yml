@@ -20,11 +20,11 @@ stages:
   jobs:
     - job: 
       steps:
-      - task: CmdLine@2
-        inputs:
-          script: |
-            pwd
-            ls -l
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+            artifact: 'terraform-manifests-out'
+            publishLocation: 'pipeline'
         
 - stage: 
   jobs:
@@ -34,12 +34,12 @@ stages:
       strategy:
        runOnce:
          deploy:
-           steps:
+           steps:          
               - task: TerraformTaskV2@2
                 inputs:
                   provider: 'azurerm'
                   command: 'init'
-                  workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+                  workingDirectory: '$(Pipeline.Workspace)/terraform-manifests'
                   backendServiceArm: 'terraform-aks-azurerm-svc-con'
                   backendAzureRmResourceGroupName: 'baoyuey-azure-test'
                   backendAzureRmStorageAccountName: 'ybystorageaccount'
@@ -49,13 +49,13 @@ stages:
                 inputs:
                   provider: 'azurerm'
                   command: 'plan'
-                  workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-                  commandOptions: '-var environment=$(DEV_ENVIRONMENT) -out $(System.DefaultWorkingDirectory)/terraform-manifests-out/$(DEV_ENVIRONMENT)-$(Build.BuildId).out'
+                  workingDirectory: '$(Pipeline.Workspace)/terraform-manifests'
+                  commandOptions: '-var environment=$(DEV_ENVIRONMENT) -out $(Pipeline.Workspace)/terraform-manifests-out/$(DEV_ENVIRONMENT)-$(Build.BuildId).out'
                   environmentServiceNameAzureRM: 'terraform-aks-azurerm-svc-con'
               - task: TerraformTaskV2@2
                 inputs:
                   provider: 'azurerm'
                   command: 'apply'
-                  workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-                  commandOptions: '$(System.DefaultWorkingDirectory)/terraform-manifests-out/$(DEV_ENVIRONMENT)-$(Build.BuildId).out'
+                  workingDirectory: '$(Pipeline.Workspace)/terraform-manifests'
+                  commandOptions: '$(Pipeline.Workspace)/terraform-manifests-out/$(DEV_ENVIRONMENT)-$(Build.BuildId).out'
                   environmentServiceNameAzureRM: 'terraform-aks-azurerm-svc-con'
