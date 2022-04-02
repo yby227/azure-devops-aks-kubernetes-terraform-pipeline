@@ -16,6 +16,16 @@ variables:
   value: qa 
 
 stages:
+- stage:
+  jobs:
+    - job: 
+      steps:
+      - task: CmdLine@2
+        inputs:
+          script: |
+            pwd
+            ls -l
+        
 - stage: 
   jobs:
     - deployment: deplyAKSCluster
