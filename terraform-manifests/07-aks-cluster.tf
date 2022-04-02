@@ -53,10 +53,10 @@ role_based_access_control {
 }  
 
 # Windows Admin Profile
-windows_profile {
-  admin_username            = var.windows_admin_username
-  admin_password            = var.windows_admin_password
-}
+#windows_profile {
+#  admin_username            = var.windows_admin_username
+#  admin_password            = var.windows_admin_password
+#}
 
 # Linux Profile
 linux_profile {
