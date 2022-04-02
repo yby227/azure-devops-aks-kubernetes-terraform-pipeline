@@ -20,4 +20,18 @@ stages:
           targetPath: '$(System.DefaultWorkingDirectory)/terraform-manifests'
           artifact: 'terraform-manifests-out'
           publishLocation: 'pipeline'
-    
+      - task: TerraformTaskV2@2
+        inputs:
+          provider: 'azurerm'
+          command: 'init'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+          backendServiceArm: 'terraform-aks-azurerm-svc-con'
+          backendAzureRmResourceGroupName: 'baoyuey-azure-test'
+          backendAzureRmStorageAccountName: 'ybystorageaccount'
+          backendAzureRmContainerName: 'tfstatefile'
+          backendAzureRmKey: 'devops-pipeline'
+      - task: TerraformTaskV2@2
+        inputs:
+          provider: 'azurerm'
+          command: 'validate'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
